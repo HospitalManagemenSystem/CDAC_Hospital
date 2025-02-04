@@ -1,4 +1,4 @@
-# CDAC-Hospita;
+# CDAC-Hospital
 
 ## 📌 Project Overview
 The **Hospital Management System (HMS)** is a full-stack web application designed to streamline hospital operations. It enables **patients, doctors, and administrators** to manage appointments, medical records, and user information efficiently. The system ensures secure authentication and role-based access control.
