@@ -41,13 +41,14 @@ public class Appointment extends BaseEntity {
         ONLINE_CONSULTATION
     }
 
-    // Getters and setters (omitted for brevity)
+    // Getters and setters 
 
     @Override
     public String toString() {
         return "Appointment{" +
                "appointmentTime=" + appointmentTime +
                ", appointmentType=" + appointmentType +
+               ", doctor=" + (doctor != null ? doctor.getId() : "null") +
                '}';
     }
 }
