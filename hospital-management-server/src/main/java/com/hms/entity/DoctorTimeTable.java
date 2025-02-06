@@ -4,9 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -30,8 +34,8 @@ public class DoctorTimeTable extends BaseEntity {
     @ElementCollection
     private List<LocalDate> holidays = new ArrayList<>();
 
-    @OneToMany(mappedBy = "doctorTimeTable", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<AvailableSlot> availableSlots = new HashSet<>();
+    @ElementCollection
+	private Map<LocalDateTime, Boolean> availableSlots = new HashMap<>();
 
     @OneToOne
     @JoinColumn(name = "doctor_id", unique = true)
@@ -106,13 +110,13 @@ public class DoctorTimeTable extends BaseEntity {
         this.holidays = holidays;
     }
 
-    public Set<AvailableSlot> getAvailableSlots() {
-        return availableSlots;
-    }
+    public Map<LocalDateTime, Boolean> getAvailableSlots() {
+		return availableSlots;
+	}
 
-    public void setAvailableSlots(Set<AvailableSlot> availableSlots) {
-        this.availableSlots = availableSlots;
-    }
+	public void setAvailableSlots(Map<LocalDateTime, Boolean> availableSlots) {
+		this.availableSlots = availableSlots;
+	}
 
     public Doctor getDoctor() {
         return doctor;
@@ -127,4 +131,16 @@ public class DoctorTimeTable extends BaseEntity {
         return "DoctorTimeTable [startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
                 + ", endTime=" + endTime + ", slotDuration=" + slotDuration + ", breakTime=" + breakTime + "]";
     }
+  //helper method to book available slots
+  	public List<LocalDateTime> bookAvailableSlot(LocalDateTime time) {
+  		Boolean value = availableSlots.get(time);
+  		availableSlots.put(time, !value);
+  		List<LocalDateTime> list = new ArrayList<>();
+  		for (Map.Entry<LocalDateTime, Boolean> entry : availableSlots.entrySet()) {
+  			if (entry.getValue() == true) { // send only list whose boolean value is true (not booked slots)
+  				list.add(entry.getKey());
+  			}
+  		}
+  		return list;
+  	}
 }
