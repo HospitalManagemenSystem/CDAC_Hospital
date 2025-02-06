@@ -1,10 +1,8 @@
-package com.hms.exception;
+package com.hms.custome_exception;
 
+@SuppressWarnings("serial")
 public class UserHandlingException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public UserHandlingException(String message) {
-        super(message);
-    }
+	public UserHandlingException(String mesg) {
+		super(mesg);
+	}
 }

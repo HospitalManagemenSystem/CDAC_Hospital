@@ -6,6 +6,8 @@ import com.hms.entity.BloodDonor;
 
 public interface BloodDonorService {
 	 List<BloodDonor> getAllBloodDonorsByCityAndBloodGroup(String city, String bloodGroup);
+	 
 	    BloodDonor saveBloodDonor(BloodDonor donor);
+	    
 	    List<BloodDonor> getAllBloodDonors();
 }
