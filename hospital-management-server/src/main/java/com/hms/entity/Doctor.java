@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hms.dto.DoctorDTO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -77,4 +78,11 @@ public class Doctor extends User {
         return "Doctor [languages=" + languages + ", specialization=" + specialization +
                 ", qualification=" + qualification + ", fees=" + fees + ", role=" + role + "]";
     }
+    
+    public static Doctor createDoctor(DoctorDTO dto) {
+		return new Doctor(dto.getLanguages(), dto.getSpecialization(), dto.getQualification(),
+				dto.getUsername(), dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPassword(),
+				dto.getDob(), dto.getGender(), dto.getMobileNumber(), dto.getArea(), dto.getCity(), dto.getState(),
+				dto.getFees());
+	}
 }
