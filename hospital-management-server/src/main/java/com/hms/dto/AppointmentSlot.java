@@ -2,109 +2,39 @@ package com.hms.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+@Data
 public class AppointmentSlot {
 
-	private LocalDate startDate;
-	private LocalDate endDate;
+	@NotNull(message = "Start date is required")
+    @FutureOrPresent(message = "Start date must be present or future")
+    private LocalDate startDate;
 
-	private LocalTime startTime;
-	private LocalTime endTime;
-	private int slotDuration;
+    @NotNull(message = "End date is required")
+    @Future(message = "End date must be in the future")
+    private LocalDate endDate;
 
-	private LocalTime breakTime;
-	private int breakDuration;
+    @NotNull(message = "Start time is required")
+    private LocalTime startTime;
 
-	private List<String> holidays = new ArrayList<>();
+    @NotNull(message = "End time is required")
+    private LocalTime endTime;
 
-	public AppointmentSlot() {
-		System.out.println("in appointment slot constr");
-	}
+    @Min(value = 10, message = "Slot duration must be at least 10 minutes")
+    @Max(value = 120, message = "Slot duration cannot exceed 120 minutes")
+    private int slotDuration;
 
-	public AppointmentSlot(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
-			int slotDuration, LocalTime breakTime, int breakDuration, List<String> holidays) {
-		super();
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.slotDuration = slotDuration;
-		this.breakTime = breakTime;
-		this.breakDuration = breakDuration;
-		this.holidays = holidays;
-	}
+    private LocalTime breakTime;
 
-	public LocalDate getStartDate() {
-		return startDate;
-	}
+    @Min(value = 0, message = "Break duration cannot be negative")
+    private int breakDuration;
 
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
-
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(LocalTime startTime) {
-		this.startTime = startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(LocalTime endTime) {
-		this.endTime = endTime;
-	}
-
-	public int getSlotDuration() {
-		return slotDuration;
-	}
-
-	public void setSlotDuration(int slotDuration) {
-		this.slotDuration = slotDuration;
-	}
-
-	public LocalTime getBreakTime() {
-		return breakTime;
-	}
-
-	public void setBreakTime(LocalTime breakTime) {
-		this.breakTime = breakTime;
-	}
-
-	public List<String> getHolidays() {
-		return holidays;
-	}
-
-	public void setHolidays(List<String> holidays) {
-		this.holidays = holidays;
-	}
-
-	public int getBreakDuration() {
-		return breakDuration;
-	}
-
-	public void setBreakDuration(int breakDuration) {
-		this.breakDuration = breakDuration;
-	}
-
-	@Override
-	public String toString() {
-		return "AppointmentSlot [startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", slotDuration=" + slotDuration + ", breakTime=" + breakTime
-				+ ", breakDuration=" + breakDuration + ", holidays=" + holidays + "]";
-	}
-
+    private List<String> holidays;
 }
