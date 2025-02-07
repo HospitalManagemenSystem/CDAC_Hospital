@@ -1,4 +1,4 @@
-package com.hms.service;
+package com.hms.entity;
 
 import com.hms.entity.BaseEntity;
 

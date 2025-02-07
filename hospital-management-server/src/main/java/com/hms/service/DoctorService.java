@@ -1,6 +1,12 @@
 package com.hms.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.hms.custome_exception.UserHandlingException;
 import com.hms.dto.DoctorDTO;
 import com.hms.entity.Doctor;
+import com.hms.entity.DoctorTimeTable;
 import com.hms.repo.AppointmentRepository;
 import com.hms.repo.DoctorRepository;
 import com.hms.repo.DoctorTimeTableRepository;
