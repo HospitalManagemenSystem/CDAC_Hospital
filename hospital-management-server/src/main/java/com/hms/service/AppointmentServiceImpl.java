@@ -1,6 +1,5 @@
 package com.hms.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,9 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.hms.custome_exception.UserHandlingException;
+import com.hms.dto.ApiResponse;
 import com.hms.entity.Appointment;
 import com.hms.entity.Doctor;
 import com.hms.entity.DoctorTimeTable;
@@ -19,120 +21,124 @@ import com.hms.repo.AppointmentRepository;
 import com.hms.repo.DoctorRepository;
 import com.hms.repo.PatientRepository;
 
-public class AppointmentServiceImpl implements AppointmentService{
+@Service
+public class AppointmentServiceImpl implements AppointmentService {
 
-	@Autowired
+    @Autowired
     private AppointmentRepository appointmentRepo;
-    
+
     @Autowired
     private DoctorRepository doctorRepo;
-    
+
     @Autowired
     private PatientRepository patientRepo;
+
     @Autowired
-    private PatientService patientService;
-    @Autowired
-    private DoctorService doctorService;
-	@Override
-	public Object getPatientByAppointmentId(Long appointmentId) {
-		Appointment appointment = appointmentRepo.findById(appointmentId)
-	            .orElseThrow(() -> new RuntimeException("Appointment not found"));
-	        return appointment.getPatient();
-	}
+    private ModelMapper modelMapper;
 
-	@Override
-	public List<Appointment> getAllPatientCurrentAppointments(Long patientId) {
-		 LocalDateTime currentDate = LocalDateTime.now();
-	        return appointmentRepo.findByPatientIdAndAppointmentTimeGreaterThanEqual(patientId, currentDate);
-	}
+    @Override
+    public ApiResponse getPatientByAppointmentId(Long appointmentId) {
+        Appointment appointment = appointmentRepo.findById(appointmentId)
+                .orElseThrow(() -> new UserHandlingException("Appointment not found"));
+        return new ApiResponse("Patient details retrieved successfully", appointment.getPatient());
+    }
 
-	@Override
-	public List<Appointment> getAllPatientAppointmentsHistory(Long patientId) {
-		LocalDateTime currentDate = LocalDateTime.now();
-        return appointmentRepo.findByPatientIdAndAppointmentTimeLessThan(patientId, currentDate);
-	}
+    @Override
+    public ApiResponse getDoctorByAppointmentId(Long appointmentId) {
+        Appointment appointment = appointmentRepo.findById(appointmentId)
+                .orElseThrow(() -> new UserHandlingException("Appointment not found"));
+        return new ApiResponse("Doctor details retrieved successfully", appointment.getDoctor());
+    }
 
-	@Override
-	public List<Appointment> getAllCurrentAppointmentsForDoctor(Long doctorId) {
-		LocalDateTime currentDate = LocalDateTime.now();
-        return appointmentRepo.findByDoctorIdAndAppointmentTimeGreaterThanEqual(doctorId, currentDate);
-	}
+    @Override
+    public ApiResponse getAllPatientCurrentAppointments(Long patientId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Appointment> appointments = appointmentRepo.findByPatientIdAndAppointmentTimeGreaterThanEqual(patientId, currentDate);
+        return new ApiResponse("Current appointments retrieved successfully", appointments);
+    }
 
-	@Override
-	public List<Appointment> getPatientAppointmentsHistoryForDoctor(Long doctorId, Long patientId) {
-		 LocalDateTime currentDate = LocalDateTime.now();
-	        return appointmentRepo.findByDoctorIdAndPatientIdAndAppointmentTimeLessThan(doctorId, patientId, currentDate);
-	}
+    @Override
+    public ApiResponse getAllPatientAppointmentsHistory(Long patientId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Appointment> appointments = appointmentRepo.findByPatientIdAndAppointmentTimeLessThan(patientId, currentDate);
+        return new ApiResponse("Past appointment history retrieved successfully", appointments);
+    }
 
-	@Override
-	public List<Appointment> getAllAppointmentsHistoryForDoctor(Long doctorId) {
-		LocalDateTime currentDate = LocalDateTime.now();
-        return appointmentRepo.findByDoctorIdAndAppointmentTimeLessThan(doctorId, currentDate);
-	}
+    @Override
+    public ApiResponse getAllCurrentAppointmentsForDoctor(Long doctorId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Appointment> appointments = appointmentRepo.findByDoctorIdAndAppointmentTimeGreaterThanEqual(doctorId, currentDate);
+        return new ApiResponse("Current appointments retrieved successfully", appointments);
+    }
 
-	@Override
-	public List<LocalDateTime> getAllAppointmentSlots(Long doctorId) {
+    @Override
+    public ApiResponse getAllAppointmentsHistoryForDoctor(Long doctorId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Appointment> appointments = appointmentRepo.findByDoctorIdAndAppointmentTimeLessThan(doctorId, currentDate);
+        return new ApiResponse("Past appointment history retrieved successfully", appointments);
+    }
 
-		 Doctor doctor = doctorRepo.findById(doctorId)
-			        .orElseThrow(() -> new RuntimeException("Doctor not found"));
-		Map<LocalDateTime, Boolean> availableSlots = doctor.getTimeSlot().getAvailableSlots();
-		List<LocalDateTime> list = new ArrayList<>();
-		for (Map.Entry<LocalDateTime, Boolean> entry : availableSlots.entrySet()) {
-			int currDate = LocalDate.now().getDayOfMonth();
-			int currMonth = LocalDate.now().getMonthValue();
-			int slotDate = entry.getKey().getDayOfMonth();
-			int slotMonth = entry.getKey().getMonthValue();
-			if (entry.getValue() == true && entry.getKey().isAfter(LocalDateTime.now()) && currDate == slotDate
-					&& currMonth == slotMonth) { // send only list whose boolean value is true (not booked slots)
-				list.add(entry.getKey());
-			}
-		}
-		Collections.sort(list);
+    @Override
+    public ApiResponse getPatientAppointmentsHistoryForDoctor(Long doctorId, Long patientId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        List<Appointment> appointments = appointmentRepo.findByDoctorIdAndPatientIdAndAppointmentTimeLessThan(doctorId, patientId, currentDate);
+        return new ApiResponse("Past appointments for patient retrieved successfully", appointments);
+    }
 
-		return list;
-	}
+    @Override
+    public ApiResponse getAllAppointmentSlots(Long doctorId) {
+        Doctor doctor = doctorRepo.findById(doctorId)
+                .orElseThrow(() -> new UserHandlingException("Doctor not found"));
 
-	@Override
-	public List<LocalDateTime> bookAppointmentForPatient(Long doctorId, Long patientId, String stime) {
+        Map<LocalDateTime, Boolean> availableSlots = doctor.getTimeSlot().getAvailableSlots();
+        List<LocalDateTime> slots = new ArrayList<>();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime time = LocalDateTime.parse(stime, formatter);
+        for (Map.Entry<LocalDateTime, Boolean> entry : availableSlots.entrySet()) {
+            if (entry.getValue() && entry.getKey().isAfter(LocalDateTime.now())) {
+                slots.add(entry.getKey());
+            }
+        }
+        Collections.sort(slots);
 
-		Doctor doctor = doctorRepo.findById(doctorId)
-				.orElseThrow(() -> new UserHandlingException("Doctor not found...!!!"));
+        return new ApiResponse("Available appointment slots retrieved successfully", slots);
+    }
 
-		Patient patient = patientRepo.findById(patientId)
-				.orElseThrow(() -> new UserHandlingException("Patient not found...!!!"));
+    @Override
+    public ApiResponse bookAppointmentForPatient(Long doctorId, Long patientId, String stime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime time = LocalDateTime.parse(stime, formatter);
 
-		DoctorTimeTable timeTable = doctor.getTimeSlot();
+        Doctor doctor = doctorRepo.findById(doctorId)
+                .orElseThrow(() -> new UserHandlingException("Doctor not found"));
 
-		Appointment appointment = new Appointment(time, doctor, patient);
-		appointmentRepo.save(appointment);
+        Patient patient = patientRepo.findById(patientId)
+                .orElseThrow(() -> new UserHandlingException("Patient not found"));
 
-		List<LocalDateTime> availableSlotList = timeTable.bookAvailableSlot(time);
+        DoctorTimeTable timeTable = doctor.getTimeSlot();
 
-		return availableSlotList;
-	}
+        if (!timeTable.getAvailableSlots().containsKey(time) || !timeTable.getAvailableSlots().get(time)) {
+            throw new UserHandlingException("Selected time slot is not available");
+        }
 
-	@Override
-	public String cancelAppointment(Long appointmentId) {
-		Appointment appointment = appointmentRepo.findById(appointmentId)
-	            .orElseThrow(() -> new RuntimeException("Appointment not found"));
-	            
-	        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now())) {
-	            throw new RuntimeException("Cannot cancel past appointments");
-	        }
-	        
-	        appointment.setStatus("CANCELLED");
-	        appointmentRepo.save(appointment);
-	        return "Appointment cancelled successfully";
-	}
+        Appointment appointment = new Appointment(time, doctor, patient, "SCHEDULED");
+        appointmentRepo.save(appointment);
+        timeTable.bookAvailableSlot(time);
 
-	@Override
-	public Object getDoctorByAppointmentId(Long appointmentId) {
-		 Appointment appointment = appointmentRepo.findById(appointmentId)
-		            .orElseThrow(() -> new RuntimeException("Appointment not found"));
-		        return appointment.getDoctor();
-	}
+        return new ApiResponse("Appointment booked successfully", time);
+    }
 
+    @Override
+    public ApiResponse cancelAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepo.findById(appointmentId)
+                .orElseThrow(() -> new UserHandlingException("Appointment not found"));
+
+        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now())) {
+            throw new UserHandlingException("Cannot cancel past appointments");
+        }
+
+        appointment.setStatus("CANCELLED");
+        appointmentRepo.save(appointment);
+
+        return new ApiResponse("Appointment cancelled successfully", null);
+    }
 }

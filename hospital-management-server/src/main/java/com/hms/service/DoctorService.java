@@ -1,78 +1,39 @@
 package com.hms.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import com.hms.custome_exception.UserHandlingException;
+import com.hms.dto.ApiResponse;
 import com.hms.dto.DoctorDTO;
 import com.hms.entity.Doctor;
+import com.hms.entity.DoctorTimeTable;
+<<<<<<< HEAD
+import com.hms.repo.AdminRepository;
 import com.hms.repo.AppointmentRepository;
 import com.hms.repo.DoctorRepository;
 import com.hms.repo.DoctorTimeTableRepository;
 import com.hms.repo.PatientRepository;
+=======
+>>>>>>> b9fa34ed620e3bdb4980b07a08112492ce7e064f
 
-@Service
-public class DoctorService {
+public interface DoctorService {
     
-	@Autowired
-    private DoctorRepository doctorRepository;
-	
-	@Autowired
-    private DoctorTimeTableRepository doctorTimeTableRepository;
-	
-	@Autowired
-	private AppointmentRepository appointmentRepository;
-	
-	@Autowired
-	private PatientRepository patientRepository;
-	
-	@Autowired
-	private AdminRepository adminRepository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    ApiResponse<List<String>> getSpecializationsByCity(String city);
 
-    // Get specializations by city
-    public List<String> getSpecializationsByCity(String city) {
-        return doctorRepository.getSpecializationsByCity(city);
-    }
+    ApiResponse<List<Doctor>> getDoctorsBySpecializationAndCity(String specialization, String city);
+    
+    ApiResponse<List<Doctor>> getAllDoctors();
 
-    // Get doctors by specialization and city
-    public List<Doctor> getDoctorsBySpecializationAndCity(String specialization, String city) {
-        return doctorRepository.findBySpecializationAndCity(specialization, city);
-    }
-    
-    public List<Doctor> getAllDoctors(){
-    	
-    	return doctorRepository.findAll();
-    }
-    
-    public Doctor getDoctorDetails(Long doctorId) {
-    	
-    	return doctorRepository.findById(doctorId).orElseThrow(() -> new UserHandlingException("Invalid doctor Id:  " + doctorId));
-    }
-    
-    public String deleteDoctorById(Long doctorId) {
-    	
-    	doctorRepository.deleteById(doctorId);
-    	return "Successfully deleted doctor with Id: " + doctorId;
-    }
-    
-    public Doctor saveDoctor(DoctorDTO doctorDTO) {
-    	
-    	String email = doctorDTO.getEmail();
-    	
-    	if(patientRepository.findByEmail(email).isPresent() || adminRepository.findByEmail(email).isPresent()) {
-    		
-    		throw new UserHandlingException("Email is already registered with another user.");
-        }
-    	
-    	Doctor newDoctor = Doctor.createDoctor(doctorDTO);
-    	newDoctor.setPassword(passwordEncoder.encode(newDoctor.getPassword()));
-    	
-    	return doctorRepository.save(newDoctor);
-    }
+    ApiResponse<Doctor> getDoctorDetails(Long doctorId);
+
+    ApiResponse<Void> deleteDoctorById(Long doctorId);
+
+    ApiResponse<Void> saveDoctor(DoctorDTO doctorDTO);
+
+    ApiResponse<Void> makeSlotsAvailable(Long appointmentId);
+
+    ApiResponse<List<LocalDateTime>> createAvailableSlotsDetails(Long doctorId, DoctorTimeTable appointmentSlot);
+
+    ApiResponse<DoctorDTO> updateDoctorDetails(DoctorDTO doctorDTO, Long id);
 }
+
