@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hms.dto.ApiResponse;
 import com.hms.dto.DoctorDTO;
 import com.hms.entity.Doctor;
 import com.hms.entity.DoctorTimeTable;
@@ -26,38 +27,45 @@ import com.hms.service.DoctorService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DoctorController {
 
-	@Autowired
-	private DoctorService doctorService;
-	
-	@GetMapping("/specializations")
-	public ResponseEntity<List<String>> getSpecializationsByCity(@RequestParam("city") String city){
-		
-		List<String> specializations = doctorService.getSpecializationsByCity(city);
-		return new ResponseEntity<>(specializations, HttpStatus.OK);
-	}
-	
-	@GetMapping
-	public ResponseEntity<List<Doctor>> getDoctorsBySpecializationAndCity(
-			@RequestParam("specialization") String specialization,
-			@RequestParam("city") String city){
-		
-		List<Doctor> doctors = doctorService.getDoctorsBySpecializationAndCity(specialization, city);
-		return new ResponseEntity<>(doctors, HttpStatus.OK);
-	}
-	
-	@PostMapping("/createAppointmentSlot/{doctorId}")
-	public List<LocalDateTime> createAppointmentSlots(@PathVariable Long doctorId,
-			@RequestBody DoctorTimeTable doctorTimeTable) {
-		return doctorService.createAvailableSlotsDetails(doctorId, doctorTimeTable);
-	}
+    @Autowired
+    private DoctorService doctorService;
 
-	@GetMapping("/getDoctorDetails/{doctorId}")
-	public ResponseEntity<?> getDoctorDetails(@PathVariable Long doctorId) {
-		return ResponseEntity.ok(doctorService.getDoctorDetails(doctorId));
-	}
+    // Endpoint to get specializations by city
+    @GetMapping("/specializations")
+    public ResponseEntity<ApiResponse<List<String>>> getSpecializationsByCity(@RequestParam("city") String city) {
+        ApiResponse<List<String>> response = doctorService.getSpecializationsByCity(city);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-	@PutMapping("/updateDoctor/{doctorId}")
-	public ResponseEntity<?> updateDoctorDetails(@RequestBody DoctorDTO detachedDoctor, @PathVariable Long doctorId) {
-		return ResponseEntity.ok(doctorService.updateDoctorDetails(detachedDoctor, doctorId));
-	}
+    // Endpoint to get doctors by specialization and city
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Doctor>>> getDoctorsBySpecializationAndCity(
+            @RequestParam("specialization") String specialization,
+            @RequestParam("city") String city) {
+        ApiResponse<List<Doctor>> response = doctorService.getDoctorsBySpecializationAndCity(specialization, city);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Endpoint to create appointment slots for a doctor
+    @PostMapping("/createAppointmentSlot/{doctorId}")
+    public ResponseEntity<ApiResponse<List<LocalDateTime>>> createAppointmentSlots(@PathVariable Long doctorId,
+            @RequestBody DoctorTimeTable doctorTimeTable) {
+        ApiResponse<List<LocalDateTime>> response = doctorService.createAvailableSlotsDetails(doctorId, doctorTimeTable);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // Endpoint to get doctor details by ID
+    @GetMapping("/getDoctorDetails/{doctorId}")
+    public ResponseEntity<ApiResponse<Doctor>> getDoctorDetails(@PathVariable Long doctorId) {
+        ApiResponse<Doctor> response = doctorService.getDoctorDetails(doctorId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Endpoint to update doctor details
+    @PutMapping("/updateDoctor/{doctorId}")
+    public ResponseEntity<ApiResponse<DoctorDTO>> updateDoctorDetails(@RequestBody DoctorDTO detachedDoctor,
+            @PathVariable Long doctorId) {
+        ApiResponse<DoctorDTO> response = doctorService.updateDoctorDetails(detachedDoctor, doctorId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
