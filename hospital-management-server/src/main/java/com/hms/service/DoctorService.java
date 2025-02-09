@@ -19,6 +19,7 @@ import com.hms.dto.DoctorDTO;
 import com.hms.entity.Appointment;
 import com.hms.entity.Doctor;
 import com.hms.entity.DoctorTimeTable;
+import com.hms.repo.AdminRepository;
 import com.hms.repo.AppointmentRepository;
 import com.hms.repo.DoctorRepository;
 import com.hms.repo.DoctorTimeTableRepository;
