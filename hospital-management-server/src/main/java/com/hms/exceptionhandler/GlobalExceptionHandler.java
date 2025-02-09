@@ -4,33 +4,34 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import com.hms.dto.ErrorResponse;
-import com.hms.custome_exception.AppointmentValidationException;
 import com.hms.custome_exception.UserHandlingException;
+import com.hms.custome_exception.AppointmentValidationException;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-@ControllerAdvice 
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+@ControllerAdvice
+public class GlobalExceptionHandler {
 
-//	@ExceptionHandler(ResourceNotFoundException.class)
-//    public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
-//        return new ResponseEntity<>(new ApiResponse(ex.getMessage(), false), HttpStatus.NOT_FOUND);
-//    }
-//    
+    // Handle UserHandlingException (authentication errors, invalid user input, etc.)
     @ExceptionHandler(UserHandlingException.class)
-    public ResponseEntity<?> handleAuthenticationException(UserHandlingException ex) {
-    	ErrorResponse resp = new ErrorResponse(ex.getMessage(), LocalDateTime.now());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    public ResponseEntity<ErrorResponse> handleUserHandlingException(UserHandlingException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);  // 400 Bad Request
     }
-//    
-//    @ExceptionHandler(AppointmentValidationException.class)
-//    public ResponseEntity<ApiResponse> handleAppointmentValidationException(AppointmentValidationException ex) {
-//        return new ResponseEntity<>(new ApiResponse(ex.getMessage(), false), HttpStatus.BAD_REQUEST);
-//    }
-    
-}
 
+    // Handle AppointmentValidationException (validation errors for appointments)
+    @ExceptionHandler(AppointmentValidationException.class)
+    public ResponseEntity<ErrorResponse> handleAppointmentValidationException(AppointmentValidationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);  // 400 Bad Request
+    }
+
+    // Generic exception handler for all unhandled exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Internal server error: " + ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);  // 500 Internal Server Error
+    }
+}

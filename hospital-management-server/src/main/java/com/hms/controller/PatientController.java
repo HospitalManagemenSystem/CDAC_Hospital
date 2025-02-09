@@ -3,51 +3,78 @@ package com.hms.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.hms.dto.ApiResponse;
 import com.hms.dto.PatientDTO;
+import com.hms.entity.Appointment;
+import com.hms.entity.Patient;
 import com.hms.service.PatientService;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/patients")
-@CrossOrigin(origins = "*")
-@Tag(name = "Patient Management")
-@RequiredArgsConstructor
-@Validated
+@RequestMapping("/patient")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PatientController {
 
-	@Autowired
-	private PatientService patientService;
-	
-	@PostMapping("/patientSignUp")
-	public ResponseEntity<?> savePatient(@RequestBody @Valid PatientDTO patient) {
-		PatientDTO p = patientService.savePatient(patient);
-		if(p == null) {
-			return ResponseEntity.badRequest().body(null);
-		}
-		return new ResponseEntity<>(p, HttpStatus.CREATED);
-	}
+    @Autowired
+    private PatientService patientService;
 
-	@GetMapping("/getPatientDetails/{patientId}")
-	public ResponseEntity<?> getPatientDetails(@PathVariable Long patientId) {
-		return ResponseEntity.ok(patientService.getPatientDetails(patientId));
-	}
+    // Endpoint to save a new patient
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse> savePatient(@RequestBody PatientDTO patientDTO) {
+        ApiResponse response = patientService.savePatient(patientDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-	@PutMapping("/updatePatientDetails/{patientId}")
-	public ResponseEntity<?> updatePatientDetails(@RequestBody PatientDTO detachedPatient,
-			@PathVariable Long patientId) {
-		return ResponseEntity.ok(patientService.updatePatientDetails(detachedPatient, patientId));
-	}
+    // Endpoint to update patient details
+    @PutMapping("/update/{patientId}")
+    public ResponseEntity<ApiResponse<PatientDTO>> updatePatientDetails(@RequestBody PatientDTO patientDTO, 
+                                                                          @PathVariable Long patientId) {
+        ApiResponse<PatientDTO> response = patientService.updatePatientDetails(patientDTO, patientId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Endpoint to get patient details by ID
+    @GetMapping("/details/{patientId}")
+    public ResponseEntity<Patient> getPatientDetails(@PathVariable Long patientId) {
+        Patient patient = patientService.getPatientDetails(patientId);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
+
+    // Endpoint to get all patients
+    @GetMapping("/all")
+    public ResponseEntity<List<Patient>> getAllPatients() {
+        List<Patient> patients = patientService.getAllPatients();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    // Endpoint to delete a patient by ID
+    @DeleteMapping("/delete/{patientId}")
+    public ResponseEntity<ApiResponse> deletePatient(@PathVariable Long patientId) {
+        ApiResponse response = patientService.deletePatientById(patientId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Endpoint for patient authentication
+    @PostMapping("/authenticate")
+    public ResponseEntity<Patient> authenticatePatient(@RequestParam String email, @RequestParam String password) {
+        Patient patient = patientService.authenticatePatient(email, password);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
+
+    // Endpoint to get upcoming appointments for a patient
+    @GetMapping("/appointments/upcoming/{patientId}")
+    public ResponseEntity<List<Appointment>> getUpcomingAppointments(@PathVariable Long patientId) {
+        List<Appointment> appointments = patientService.getUpcomingAppointments(patientId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+    // Endpoint to get past appointments for a patient
+    @GetMapping("/appointments/past/{patientId}")
+    public ResponseEntity<List<Appointment>> getPastAppointments(@PathVariable Long patientId) {
+        List<Appointment> appointments = patientService.getPastAppointments(patientId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
 }
