@@ -8,29 +8,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ErrorResponse {
-	private String message;
-	private LocalDateTime timestamp;
-	    public ErrorResponse() {
-			// TODO Auto-generated constructor stub
-		}
-	    public String getMessage() {
-			return message;
-		}
+    private String message;
+    private LocalDateTime timestamp;
 
-		public void setMessage(String message) {
-			this.message = message;
-		}
-
-		public LocalDateTime getTimestamp() {
-			return timestamp;
-		}
-
-		public void setTimestamp(LocalDateTime timestamp) {
-			this.timestamp = timestamp;
-		}
-
-		@Override
-		public String toString() {
-			return "ErrorResponse [message=" + message + ", timestamp=" + timestamp + "]";
-		}
+    public ErrorResponse() {
+        // Default constructor for deserialization
+    }
 }
