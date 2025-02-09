@@ -11,19 +11,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "patient_tbl")
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Patient extends User {
-	@Enumerated(EnumType.STRING)
+    
+    @Enumerated(EnumType.STRING)
     @Column(name = "blood_group")
     private BloodGroup bloodGroup;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments = new ArrayList<>();
-
-    public Patient() {}
 
     public BloodGroup getBloodGroup() {
         return bloodGroup;
@@ -45,18 +50,18 @@ public class Patient extends User {
     public String toString() {
         return super.toString() + ", BloodGroup=" + bloodGroup;
     }
-    
-    public static Patient createPatient(PatientDTO dto) {
-        Patient patient = new Patient();
-        patient.setFirstName(dto.getFirstName());
-        patient.setLastName(dto.getLastName());
-        patient.setEmail(dto.getEmail());
-        patient.setPassword(dto.getPassword());
-        patient.setMobileNumber(dto.getMobileNumber());
-        patient.setCity(dto.getCity());
-        patient.setBloodGroup(dto.getBloodGroup());
-        patient.setArea(dto.getArea());
-        patient.setGender(dto.getGender());
-        return patient;
-    }
+
+//    public static Patient createPatient(PatientDTO dto) {
+//        Patient patient = new Patient();
+//        patient.setFirstName(dto.getFirstName());
+//        patient.setLastName(dto.getLastName());
+//        patient.setEmail(dto.getEmail());
+//        patient.setPassword(dto.getPassword());
+//        patient.setMobileNumber(dto.getMobileNumber());
+//        patient.setCity(dto.getCity());
+//        patient.setBloodGroup(dto.getBloodGroup());
+//        patient.setArea(dto.getArea());
+//        patient.setGender(dto.getGender());
+//        return patient;
+//    }
 }

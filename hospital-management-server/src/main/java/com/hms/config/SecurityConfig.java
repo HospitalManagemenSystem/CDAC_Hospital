@@ -32,29 +32,37 @@ public class SecurityConfig {
 
             // 2. Configure URL-based access
             .authorizeHttpRequests(request -> 
+                // 3. Public endpoints - No authentication required
                 request.requestMatchers(
-                        "/users/signup",  // Endpoint to sign up users
-                        "/users/signin",   // Endpoint to sign in users
-                        "/v*/api-doc*/**", // Swagger UI and API docs
-                        "/swagger-ui/**",
-                        "/users/forgot-password", // Assuming you have this endpoint
-                        "/users/reset-password"  // Assuming you have this endpoint
+                        "/auth/login",  // Login endpoint
+                        "/home/generate-token", // Token generation endpoint
+                        "/home/reset-password",  // Password reset endpoint
+                        "/swagger-ui/**", // Swagger UI and API docs
+                        "/v*/api-doc*/**"  // Swagger UI and API docs
                 ).permitAll()  // Allow public access to the above endpoints
-                .requestMatchers(HttpMethod.OPTIONS).permitAll() // Allow pre-flight requests (CORS)
 
-                // 3. Protect these endpoints and require authentication
-                .requestMatchers("/doctors/**") // Endpoint for Doctor-related actions (Doctor management)
-                .hasRole("DOCTOR") // Only users with DOCTOR role can access this
-                .requestMatchers("/patients/**") // Endpoint for Patient-related actions
+                // 4. Patient-related endpoints (assuming these are for all authenticated users)
+                .requestMatchers("/patient/authenticate", "/patient/appointments/upcoming/**", 
+                                 "/patient/appointments/past/**", "/patient/all", "/patient/details/**")
+                .authenticated() // Require authentication for these endpoints
+
+                // 5. Doctor-related endpoints (only accessible by doctors)
+                .requestMatchers("/doctor/**")  // Doctor-specific actions
+                .hasRole("DOCTOR")  // Only users with DOCTOR role can access this
+
+                // 6. Admin-related endpoints (only accessible by admin)
+                .requestMatchers("/patient/create", "/patient/update/**", "/patient/delete/**", "/patient/all")
                 .hasRole("ADMIN")  // Only users with ADMIN role can access this
-                .requestMatchers("/appointments/**") // Endpoint for Appointment-related actions
-                .authenticated()  // Any authenticated user can access this
-                .anyRequest().authenticated()  // All other requests require authentication
-            )
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session creation as we're using JWT
 
-            // 4. Add custom JWT filter before any authentication filter
+                // 7. Default case: any other requests require authentication
+                .anyRequest().authenticated()
+            )
+
+            // 8. Session management (No session creation as we're using JWT)
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            // 9. Add custom JWT filter before any authentication filter
             .addFilterBefore(customJWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build(); // Build the security configuration

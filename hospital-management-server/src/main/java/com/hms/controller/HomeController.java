@@ -10,7 +10,8 @@ import com.hms.dto.LoginResponse;
 import com.hms.service.HomeService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/home")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class HomeController {
 
     private final HomeService homeService;
@@ -21,11 +22,11 @@ public class HomeController {
     }
 
     // Endpoint for user login
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> loginUser(@RequestBody LoginRequest loginRequest) {
-        ApiResponse<LoginResponse> response = homeService.authenticateUser(loginRequest);
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<ApiResponse<LoginResponse>> loginUser(@RequestBody LoginRequest loginRequest) {
+//        ApiResponse<LoginResponse> response = homeService.authenticateUser(loginRequest);
+//        return ResponseEntity.ok(response);
+//    }
 
     // Endpoint for generating token
     @PostMapping("/generate-token")

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hms.dto.ApiResponse;
 import com.hms.dto.DoctorDTO;
 import com.hms.entity.BloodDonor;
 import com.hms.entity.Doctor;
@@ -29,55 +30,55 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AdminController {
 
-	// dependencies added in constructor by @Autowired
-	@Autowired
-	private DoctorService doctorService;
     @Autowired
-	private PatientService patientService;
-    @Autowired
-	private BloodDonorService bloodDonorService;
+    private DoctorService doctorService;
     
+    @Autowired
+    private PatientService patientService;
+    
+    @Autowired
+    private BloodDonorService bloodDonorService;
+    
+    // Sign up a new doctor
     @PostMapping("/doctorSignUp")
-	public ResponseEntity<?> saveDoctor(@RequestBody @Valid DoctorDTO doctor) {
-		System.out.println("Doc DTO from ctrler : "+doctor);
-		
-		Doctor d = doctorService.saveDoctor(doctor);
-		if(d == null) {
-			System.out.println("BAD REQ IF BLOCK");
-			return ResponseEntity.badRequest().body(null);
-		}
-		return new ResponseEntity<>(d, HttpStatus.CREATED);
-	}
-    
+    public ResponseEntity<ApiResponse<Void>> saveDoctor(@RequestBody @Valid DoctorDTO doctorDTO) {
+        ApiResponse<Void> response = doctorService.saveDoctor(doctorDTO);
+        if (response.getData() == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>("Failed to save doctor", null));
+        }
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // Get all doctor details
     @GetMapping("/getAllDoctors")
-	public List<Doctor> getAllDoctorDetails() {
-		return doctorService.getAllDoctors();
-	}
+    public ResponseEntity<ApiResponse<List<Doctor>>> getAllDoctorDetails() {
+        ApiResponse<List<Doctor>> response = doctorService.getAllDoctors();
+        return ResponseEntity.ok(response);
+    }
 
-	@DeleteMapping("/removeDoctor/{doctorId}")
-	public String deleteDoctor(@PathVariable Long doctorId) {
-		return doctorService.deleteDoctorById(doctorId);
-	}
+    // Delete doctor by ID
+    @DeleteMapping("/removeDoctor/{doctorId}")
+    public ResponseEntity<ApiResponse<Void>> deleteDoctor(@PathVariable Long doctorId) {
+        ApiResponse<Void> response = doctorService.deleteDoctorById(doctorId);
+        return ResponseEntity.ok(response);
+    }
 
-	@GetMapping("/getAllPatients")
-	public List<Patient> getAllPatientDetails() {
-		return patientService.getAllPatients();
-	}
+    // Get all patient details
+    @GetMapping("/getAllPatients")
+    public List<Patient> getAllPatientDetails() {
+        return patientService.getAllPatients();
+    }
 
-	@DeleteMapping("/removePatient/{patientId}")
-	public String deletePatient(@PathVariable Long patientId) {
-		return patientService.deletePatientById(patientId);
-	}
+    // Delete patient by ID
+    @DeleteMapping("/removePatient/{patientId}")
+    public ResponseEntity<String> deletePatient(@PathVariable Long patientId) {
+        ApiResponse response = patientService.deletePatientById(patientId);
+        return ResponseEntity.ok(response.getMessage());
+    }
 
-	@PostMapping("/bloodDonor")
-	public ResponseEntity<?> saveBloodDonor(@RequestBody @Valid BloodDonor donor) {
-		return new ResponseEntity<>(bloodDonorService.saveBloodDonor(donor), HttpStatus.CREATED);
-	}
-
-	@GetMapping("/searchDonors")
-	public List<BloodDonor> getAllBloodDonors() {
-		return bloodDonorService.getAllBloodDonors();
-	}
-
+    // Get all blood donors
+    @GetMapping("/searchDonors")
+    public List<BloodDonor> getAllBloodDonors() {
+        return bloodDonorService.getAllBloodDonors();
+    }
 }
-
