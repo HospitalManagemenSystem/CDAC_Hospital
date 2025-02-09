@@ -21,77 +21,78 @@ import com.hms.service.EmailSenderService;
 @RequestMapping("/appointment")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AppointmentController {
-	@Autowired
-	private EmailSenderService emailSenderService;
-	@Autowired
-	private DoctorService doctorService;
-	@Autowired
-	private AppointmentService appointmentService;
-	
-	@GetMapping("/patient/{appointmentId}")
-	public ResponseEntity<?> getPatientByAppointmentId(@PathVariable Long appointmentId) {
-		return ResponseEntity.ok(appointmentService.getPatientByAppointmentId(appointmentId));
-	}
 
-	@GetMapping("/specialization/{city}")
-	public ResponseEntity<?> getSpecializationByCity(@PathVariable String city) {
-		return ResponseEntity.ok(doctorService.getSpecializationsByCity(city));
-	}
+    @Autowired
+    private EmailSenderService emailSenderService;
 
-	@GetMapping("/search/{specialization}/{city}")
-	public ResponseEntity<?> getDoctorsBySpecializationAndCity(@PathVariable String specialization,
-			@PathVariable String city) {
-		return ResponseEntity.ok(doctorService.getDoctorsBySpecializationAndCity(specialization, city));
-	}
+    @Autowired
+    private DoctorService doctorService;
 
-	@GetMapping("/currAppointmentP/{patientId}")
-	public List<Appointment> getAllCurrentAppoinments(@PathVariable Long patientId) {
-		return appointmentService.getAllPatientCurrentAppointments(patientId);
-	}
+    @Autowired
+    private AppointmentService appointmentService;
 
-	@GetMapping("/appointementHistoryP/{patientId}")
-	public List<Appointment> getAllAppoinmentsHistory(@PathVariable Long patientId) {
-		return appointmentService.getAllPatientAppointmentsHistory(patientId);
-	}
+    @GetMapping("/patient/{appointmentId}")
+    public ResponseEntity<?> getPatientByAppointmentId(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getPatientByAppointmentId(appointmentId));
+    }
 
-	@GetMapping("/currAppointmentD/{doctorId}")
-	public List<Appointment> getAllCurrentAppoinmentsForDoctor(@PathVariable Long doctorId) {
-		return appointmentService.getAllCurrentAppointmentsForDoctor(doctorId);
-	}
+    @GetMapping("/specialization/{city}")
+    public ResponseEntity<?> getSpecializationByCity(@PathVariable String city) {
+        return ResponseEntity.ok(doctorService.getSpecializationsByCity(city));
+    }
 
-	@GetMapping("/appointementHistoryD/{doctorId}/{patientId}")
-	public List<Appointment> getAppoinmentsHistoryOfPatientForDoctor(@PathVariable Long doctorId,
-			@PathVariable Long patientId) {
-		return appointmentService.getPatientAppointmentsHistoryForDoctor(doctorId, patientId);
-	}
+    @GetMapping("/search/{specialization}/{city}")
+    public ResponseEntity<?> getDoctorsBySpecializationAndCity(@PathVariable String specialization,
+            @PathVariable String city) {
+        return ResponseEntity.ok(doctorService.getDoctorsBySpecializationAndCity(specialization, city));
+    }
 
-	@GetMapping("/appointementHistoryD/{doctorId}")
-	public List<Appointment> getAllAppoinmentsHistoryForDoctor(@PathVariable Long doctorId) {
-		return appointmentService.getAllAppointmentsHistoryForDoctor(doctorId);
-	}
+    @GetMapping("/currAppointmentP/{patientId}")
+    public ResponseEntity<?> getAllCurrentAppointmentsForPatient(@PathVariable Long patientId) {
+        return ResponseEntity.ok(appointmentService.getAllPatientCurrentAppointments(patientId));
+    }
 
-	@GetMapping("/getAppointmentSlots/{doctorId}")
-	public List<LocalDateTime> getAllAppointmentSlots(@PathVariable Long doctorId) {
-		return appointmentService.getAllAppointmentSlots(doctorId);
-	}
+    @GetMapping("/appointementHistoryP/{patientId}")
+    public ResponseEntity<?> getAllAppointmentsHistoryForPatient(@PathVariable Long patientId) {
+        return ResponseEntity.ok(appointmentService.getAllPatientAppointmentsHistory(patientId));
+    }
 
-	@GetMapping("/bookAppointment/{doctorId}/{patientId}/{time}")
-	public List<LocalDateTime> bookAppointmentForPatient(@PathVariable Long doctorId, @PathVariable Long patientId,
-			@PathVariable String time) {
-		emailSenderService.sendEmailOnAppointmentBooking(patientId,time);
-		return appointmentService.bookAppointmentForPatient(doctorId, patientId, time);
-	}
+    @GetMapping("/currAppointmentD/{doctorId}")
+    public ResponseEntity<?> getAllCurrentAppointmentsForDoctor(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(appointmentService.getAllCurrentAppointmentsForDoctor(doctorId));
+    }
 
-	@DeleteMapping("/cancelAppointment/{appointmentId}")
-	public void cancelAppointment(@PathVariable Long appointmentId) {
-		emailSenderService.sendEmailOnCancelAppointment(appointmentId);
-		System.out.println(appointmentService.cancelAppointment(appointmentId));
-	}
-	
-	@GetMapping("/doctor/{appointmentId}")
-	public ResponseEntity<?> getDoctorByAppointmentId(@PathVariable Long appointmentId) {
-		System.out.println("In ctrler...");
-		return ResponseEntity.ok(appointmentService.getDoctorByAppointmentId(appointmentId));
-	}
-	
+    @GetMapping("/appointementHistoryD/{doctorId}/{patientId}")
+    public ResponseEntity<?> getAppointmentsHistoryForPatientForDoctor(@PathVariable Long doctorId,
+            @PathVariable Long patientId) {
+        return ResponseEntity.ok(appointmentService.getPatientAppointmentsHistoryForDoctor(doctorId, patientId));
+    }
+
+    @GetMapping("/appointementHistoryD/{doctorId}")
+    public ResponseEntity<?> getAllAppointmentsHistoryForDoctor(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsHistoryForDoctor(doctorId));
+    }
+
+    @GetMapping("/getAppointmentSlots/{doctorId}")
+    public ResponseEntity<?> getAllAppointmentSlots(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentSlots(doctorId));
+    }
+
+    @GetMapping("/bookAppointment/{doctorId}/{patientId}/{time}")
+    public ResponseEntity<?> bookAppointmentForPatient(@PathVariable Long doctorId, @PathVariable Long patientId,
+            @PathVariable String time) {
+        emailSenderService.sendEmailOnAppointmentBooking(patientId, time);
+        return ResponseEntity.ok(appointmentService.bookAppointmentForPatient(doctorId, patientId, time));
+    }
+
+    @DeleteMapping("/cancelAppointment/{appointmentId}")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Long appointmentId) {
+        emailSenderService.sendEmailOnCancelAppointment(appointmentId);
+        return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentId));
+    }
+
+    @GetMapping("/doctor/{appointmentId}")
+    public ResponseEntity<?> getDoctorByAppointmentId(@PathVariable Long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getDoctorByAppointmentId(appointmentId));
+    }
 }
