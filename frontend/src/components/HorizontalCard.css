@@ -1,0 +1,55 @@
+.departments-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.departments-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.departments-section p {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  color: #666;
+}
+
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.department-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.department-card:hover {
+  transform: translateY(-5px);
+}
+
+.dept-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.more-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.more-btn:hover {
+  background-color: #0056b3;
+}

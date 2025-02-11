@@ -1,0 +1,15 @@
+.nav-tabs .nav-link {
+  color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  font-weight: 500;
+}
+
+.card {
+  margin-top: 10px;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
