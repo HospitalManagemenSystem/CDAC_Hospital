@@ -40,14 +40,14 @@ public class AdminController {
     private BloodDonorService bloodDonorService;
     
     // Sign up a new doctor
-    @PostMapping("/doctorSignUp")
-    public ResponseEntity<ApiResponse<Void>> saveDoctor(@RequestBody @Valid DoctorDTO doctorDTO) {
-        ApiResponse<Void> response = doctorService.saveDoctor(doctorDTO);
-        if (response.getData() == null) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>("Failed to save doctor", null));
-        }
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @PostMapping("/doctorSignUp")
+//    public ResponseEntity<ApiResponse<Void>> saveDoctor(@RequestBody @Valid DoctorDTO doctorDTO) {
+//        ApiResponse<Void> response = doctorService.saveDoctor(doctorDTO);
+//        if (response.getData() == null) {
+//            return ResponseEntity.badRequest().body(new ApiResponse<>("Failed to save doctor", null));
+//        }
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
 
     // Get all doctor details
     @GetMapping("/getAllDoctors")
@@ -70,11 +70,11 @@ public class AdminController {
     }
 
     // Delete patient by ID
-    @DeleteMapping("/removePatient/{patientId}")
-    public ResponseEntity<String> deletePatient(@PathVariable Long patientId) {
-        ApiResponse response = patientService.deletePatientById(patientId);
-        return ResponseEntity.ok(response.getMessage());
-    }
+//    @DeleteMapping("/removePatient/{patientId}")
+//    public ResponseEntity<String> deletePatient(@PathVariable Long patientId) {
+//        ApiResponse response = patientService.deletePatientById(patientId);
+//        return ResponseEntity.ok(response.getMessage());
+//    }
 
     // Get all blood donors
     @GetMapping("/searchDonors")

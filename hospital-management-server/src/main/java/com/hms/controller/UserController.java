@@ -11,8 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("/users")
+@CrossOrigin("*")
+public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -29,6 +30,6 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        return jwtUtils.generateJwtToken(authentication);
+        return jwtUtils.generateToken(authentication);
     }
 }

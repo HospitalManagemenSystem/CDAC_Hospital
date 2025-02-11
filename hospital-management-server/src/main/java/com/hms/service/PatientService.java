@@ -8,7 +8,7 @@ import com.hms.entity.Appointment;
 import com.hms.entity.Patient;
 
 public interface PatientService {
-    ApiResponse savePatient(PatientDTO patientDTO);
+//    ApiResponse savePatient(PatientDTO patientDTO);
     ApiResponse<PatientDTO> updatePatientDetails(PatientDTO patientDTO, Long patientId);  // updated return type
     Patient getPatientDetails(Long patientId);
     List<Patient> getAllPatients();

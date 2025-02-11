@@ -11,7 +11,7 @@ import com.hms.entity.Doctor;
 import com.hms.entity.Patient;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
-	  // Patient related queries
+    // Patient related queries
     List<Appointment> findByPatientAndAppointmentTimeAfter(Patient patient, LocalDateTime time);
     
     List<Appointment> findByPatientAndAppointmentTimeBeforeOrderByAppointmentTimeDesc(
@@ -30,9 +30,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
         Doctor doctor, Patient patient, LocalDateTime time);
     
     // ID retrieval
-    @Query("SELECT a.id FROM Appointment a WHERE a.patient.id = :patientId")    
+    @Query("SELECT a.id FROM Appointment a WHERE a.patient.id = :patientId")
     List<Long> getAppointmentIdListForPatient(Long patientId);
- // Find appointments for a patient after current date/time
+    
+    // Find appointments for a patient after current date/time
     List<Appointment> findByPatientIdAndAppointmentTimeGreaterThanEqual(Long patientId, LocalDateTime currentTime);
     
     // Find appointments for a patient before current date/time (history)
@@ -55,5 +56,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
     
     // Find all appointments for a patient ordered by date
     List<Appointment> findByPatientIdOrderByAppointmentTimeDesc(Long patientId);
-    
 }
