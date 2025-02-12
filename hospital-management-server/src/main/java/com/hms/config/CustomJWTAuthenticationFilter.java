@@ -12,47 +12,40 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Custom filter for JWT-based authentication that executes once per request
+ */
 @Component
 public class CustomJWTAuthenticationFilter extends OncePerRequestFilter {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomJWTAuthenticationFilter.class);
-
+    
     @Autowired
-    private JwtUtils jwtUtils;
-
+    private JwtUtils jwtUtil;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-        // 1. Check for the Authorization header
+        
+        // 1. Check authorization header from incoming request
         String authHeader = request.getHeader("Authorization");
-
-        // 2. If the Authorization header is present and starts with "Bearer "
+        
+        // 2. Check if its not null and starts with "Bearer "
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // 3. Extract the JWT token
+            // 3. Extract JWT
             String jwt = authHeader.substring(7);
-
-            try {
-                // 4. Validate the JWT and get Authentication object
-                Authentication authentication = jwtUtils.populateAuthenticationTokenFromJWT(jwt);
-
-                // 5. If authentication is valid, set it in the SecurityContextHolder
+            System.out.println("Bearer "+jwt);
+            
+            // 4. Use JwtUtil to validate token and get Authentication object
+            Authentication authentication = jwtUtil.getAuthenticationFromToken(jwt);
+            System.out.println("authentication "+ authentication);
+            // 5. If authentication is valid, store it in SecurityContextHolder
+            if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.info("Successfully set authentication in SecurityContextHolder");
-
-            } catch (Exception e) {
-                // 6. Handle JWT parsing/validation errors (invalid, expired tokens, etc.)
-                logger.error("JWT validation failed: " + e.getMessage());
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid or expired JWT token");
-                return; // Exit the filter chain if the token is invalid
+                System.out.println("Saved auth details under spring security context!");
             }
         }
-
-        // 7. Continue with the filter chain
+        
+        // Continue with remaining filter chain
         filterChain.doFilter(request, response);
     }
 }

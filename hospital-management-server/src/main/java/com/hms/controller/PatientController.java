@@ -22,11 +22,11 @@ public class PatientController {
     private PatientService patientService;
 
     // Endpoint to save a new patient
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse> savePatient(@RequestBody PatientDTO patientDTO) {
-        ApiResponse response = patientService.savePatient(patientDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<ApiResponse> savePatient(@RequestBody PatientDTO patientDTO) {
+//        ApiResponse response = patientService.savePatient(patientDTO);
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
 
     // Endpoint to update patient details
     @PutMapping("/update/{patientId}")

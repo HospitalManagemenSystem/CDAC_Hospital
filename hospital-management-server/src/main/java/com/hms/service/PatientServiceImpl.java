@@ -28,7 +28,7 @@ import com.hms.dto.ApiResponse;
 import com.hms.dto.PatientDTO;
 import com.hms.entity.Appointment;
 import com.hms.entity.Patient;
-import com.hms.repo.AdminRepository;
+//import com.hms.repo.AdminRepository;
 import com.hms.repo.AppointmentRepository;
 import com.hms.repo.DoctorRepository;
 import com.hms.repo.PatientRepository;
@@ -40,8 +40,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private PatientRepository patientRepo;
-    @Autowired
-    private AdminRepository adminRepo;
+//    @Autowired
+//    private AdminRepository adminRepo;
     @Autowired
     private DoctorRepository doctorRepo;
     @Autowired
@@ -53,15 +53,15 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Override
-    public ApiResponse savePatient(PatientDTO patientDTO) {
-        validateUniqueEmail(patientDTO.getEmail());
-        
-        Patient newPatient = modelMapper.map(patientDTO, Patient.class);
-        newPatient.setPassword(passwordEncoder.encode(patientDTO.getPassword()));
-        Patient savedPatient = patientRepo.save(newPatient);
-        return new ApiResponse("Patient successfully created.", convertToDTO(savedPatient));
-    }
+//    @Override
+//    public ApiResponse savePatient(PatientDTO patientDTO) {
+//        validateUniqueEmail(patientDTO.getEmail());
+//        
+//        Patient newPatient = modelMapper.map(patientDTO, Patient.class);
+//        newPatient.setPassword(passwordEncoder.encode(patientDTO.getPassword()));
+//        Patient savedPatient = patientRepo.save(newPatient);
+//        return new ApiResponse("Patient successfully created.", convertToDTO(savedPatient));
+//    }
 
     private PatientDTO convertToDTO(Patient patient) {
         return modelMapper.map(patient, PatientDTO.class);
@@ -134,15 +134,15 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new UserHandlingException("Invalid credentials"));
     }
 
-    private void validateUniqueEmail(String email) {
-        if (doctorRepo.findByEmail(email).isPresent()) {
-            throw new UserHandlingException("Email already registered with a doctor account");
-        }
-        if (adminRepo.findByEmail(email).isPresent()) {
-            throw new UserHandlingException("Email already registered with an admin account");
-        }
-        if (patientRepo.findByEmail(email).isPresent()) {
-            throw new UserHandlingException("Email already registered with a patient account");
-        }
-    }
+//    private void validateUniqueEmail(String email) {
+//        if (doctorRepo.findByEmail(email).isPresent()) {
+//            throw new UserHandlingException("Email already registered with a doctor account");
+//        }
+//        if (adminRepo.findByEmail(email).isPresent()) {
+//            throw new UserHandlingException("Email already registered with an admin account");
+//        }
+//        if (patientRepo.findByEmail(email).isPresent()) {
+//            throw new UserHandlingException("Email already registered with a patient account");
+//        }
+//    }
 }

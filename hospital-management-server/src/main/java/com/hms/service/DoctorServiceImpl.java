@@ -30,28 +30,28 @@ import com.hms.repo.PatientRepository;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     
-	@Autowired
+    @Autowired
     private DoctorRepository doctorRepository;
-	
-	@Autowired
+    
+    @Autowired
     private DoctorTimeTableRepository doctorTimeTableRepository;
-	
-	@Autowired
-	private AppointmentRepository appointmentRepository;
-	
-	@Autowired
-	private PatientRepository patientRepository;
-	
-	@Autowired
-	private AdminRepository adminRepository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
+    
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    
+    @Autowired
+    private PatientRepository patientRepository;
+    
+    @Autowired
+    private AdminRepository adminRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
     private ModelMapper modelMapper;
-	
-	// Convert Entity to DTO
+    
+    // Convert Entity to DTO
     private DoctorDTO convertToDTO(Doctor doctor) {
         return modelMapper.map(doctor, DoctorDTO.class);
     }

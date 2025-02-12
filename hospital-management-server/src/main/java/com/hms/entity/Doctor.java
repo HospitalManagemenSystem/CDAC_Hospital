@@ -6,19 +6,13 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class Doctor extends User {
+public class Doctor extends BaseEntity {
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(length = 30, nullable = false)
     @NotBlank(message = "Language must be supplied")
@@ -42,6 +36,97 @@ public class Doctor extends User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role = UserRole.DOCTOR; // Default role as DOCTOR
+    private UserRole role = UserRole.DOCTOR;
 
+    // Default constructor
+    public Doctor() {
+    }
+
+    // Getters
+    public User getUser() {
+        return user;
+    }
+
+    public String getLanguages() {
+        return languages;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public String getQualification() {
+        return qualification;
+    }
+
+    public Integer getFees() {
+        return fees;
+    }
+
+    public DoctorTimeTable getTimeSlot() {
+        return timeSlot;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    // Setters
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setLanguages(String languages) {
+        this.languages = languages;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
+
+    public void setFees(Integer fees) {
+        this.fees = fees;
+    }
+
+    public void setTimeSlot(DoctorTimeTable timeSlot) {
+        this.timeSlot = timeSlot;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    // Helper method to add appointment
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+        appointment.setDoctor(this);
+    }
+
+    // Helper method to remove appointment
+    public void removeAppointment(Appointment appointment) {
+        appointments.remove(appointment);
+        appointment.setDoctor(null);
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor [user=" + user.getFirstName() + " " + user.getLastName() +
+               ", languages=" + languages +
+               ", specialization=" + specialization +
+               ", qualification=" + qualification +
+               ", fees=" + fees +
+               ", role=" + role + "]";
+    }
 }
