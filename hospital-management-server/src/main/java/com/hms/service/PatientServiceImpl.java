@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+ package com.hms.service;
+import static com.hms.util.UtilityClass.getNullPropertyNames;
+=======
 package com.hms.service;
 
+>>>>>>> b9fa34ed620e3bdb4980b07a08112492ce7e064f
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,6 +14,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< HEAD
+import com.hms.repo.AdminRepository;
+//import com.hms.repo.AdminRepository;
+import com.hms.repo.AppointmentRepository;
+import com.hms.repo.DoctorRepository;
+import com.hms.repo.PatientRepository;
+
+=======
+>>>>>>> b9fa34ed620e3bdb4980b07a08112492ce7e064f
 import com.hms.custome_exception.UserHandlingException;
 import com.hms.dto.ApiResponse;
 import com.hms.dto.PatientDTO;
