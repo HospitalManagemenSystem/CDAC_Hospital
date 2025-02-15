@@ -93,7 +93,7 @@ const AddNewDonor = () => {
                         className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''}`}
                       />
                       <ErrorMessage name="email" component="div" className="text-danger" />
-                    </div>
+                      </div>
                   </div>
                   <div className="form-group row mt-3 justify-content-center">
                     <label htmlFor="contactNumber" className="col-2 col-form-label">

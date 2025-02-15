@@ -68,7 +68,7 @@ const CreateAppointmentSlots = () => {
           });
         })
         .catch(error => {
-          console.error('Error:', error.response.data);
+            console.error('Error:', error.response.data);
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -82,8 +82,8 @@ const CreateAppointmentSlots = () => {
   };
 
   const onChange = e => {
-    const { name, value } = e.target;
-    switch (name) {
+     const { name, value } = e.target;
+     switch (name) {
       case 'startDate':
         setStartDate(value);
         break;

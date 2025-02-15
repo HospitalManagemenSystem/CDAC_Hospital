@@ -29,8 +29,8 @@ const AppointmentHistory = () => {
   };
 
   return (
-    <div className="container my-4">
-      <button
+       <div className="container my-4">
+       <button
         className="btn btn-secondary offset-11"
         onClick={() => navigate('/patientDashboard')}
       >
@@ -42,7 +42,7 @@ const AppointmentHistory = () => {
       ) : (
         <div>
           <h3>Your Appointment History</h3>
-          <table className="table table-bordered">
+           <table className="table table-bordered">
             <thead className="bg-dark text-light">
               <tr>
                 <th>S. No.</th>
